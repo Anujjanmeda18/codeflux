@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 
 import { Doc } from "../../../../convex/_generated/dataModel";
 
-import { useProjectsPartial } from "../hooks/use-projects";
+// import { useProjectsPartial } from "../hooks/use-projects";
 
 const formatTimestamp = (timestamp: number) => {
   return formatDistanceToNow(new Date(timestamp), {
@@ -87,8 +87,66 @@ const ProjectItem = ({ data }: { data: Doc<"projects"> }) => {
   );
 };
 
+// Hardcoded mock data
+// Hardcoded mock data matching your actual schema
+const MOCK_PROJECTS: Doc<"projects">[] = [
+  {
+    _id: "k17abc123def456gh" as any,
+    _creationTime: Date.now() - 5 * 60 * 1000,
+    name: "Vibely Social Platform",
+    ownerId: "user123",
+    updatedAt: Date.now() - 5 * 60 * 1000,
+    importStatus: "completed",
+  },
+  {
+    _id: "k17def456ghi789jk" as any,
+    _creationTime: Date.now() - 2 * 60 * 60 * 1000,
+    name: "Intervue AI",
+    ownerId: "user123",
+    updatedAt: Date.now() - 2 * 60 * 60 * 1000,
+    importStatus: "completed",
+  },
+  {
+    _id: "k17ghi789jkl012mn" as any,
+    _creationTime: Date.now() - 24 * 60 * 60 * 1000,
+    name: "Genova.ai",
+    ownerId: "user123",
+    updatedAt: Date.now() - 24 * 60 * 60 * 1000,
+    importStatus: "importing",
+  },
+  {
+    _id: "k17jkl012mno345pq" as any,
+    _creationTime: Date.now() - 3 * 24 * 60 * 60 * 1000,
+    name: "E-commerce Dashboard",
+    ownerId: "user123",
+    updatedAt: Date.now() - 3 * 24 * 60 * 60 * 1000,
+    importStatus: "completed",
+    exportStatus: "completed",
+    exportRepoUrl: "https://github.com/username/ecommerce-dash",
+  },
+  {
+    _id: "k17mno345pqr678st" as any,
+    _creationTime: Date.now() - 7 * 24 * 60 * 60 * 1000,
+    name: "Portfolio Website",
+    ownerId: "user123",
+    updatedAt: Date.now() - 7 * 24 * 60 * 60 * 1000,
+    importStatus: "failed",
+  },
+  {
+    _id: "k17pqr678stu901vw" as any,
+    _creationTime: Date.now() - 14 * 24 * 60 * 60 * 1000,
+    name: "Task Manager App",
+    ownerId: "user123",
+    updatedAt: Date.now() - 14 * 24 * 60 * 60 * 1000,
+    importStatus: "completed",
+    exportStatus: "exporting",
+  },
+];
+
+
 export const ProjectsList = ({ onViewAll }: ProjectsListProps) => {
-  const projects = useProjectsPartial(6);
+  // const projects = useProjectsPartial(6);
+  const projects = MOCK_PROJECTS; // Using hardcoded data
 
   if (projects === undefined) {
     return <Spinner className="size-4 text-ring" />;
