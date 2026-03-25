@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import "allotment/dist/style.css";  // ← ADD THIS LINE
 
 import { Providers } from "../components/providers";
 
@@ -27,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${plexMono.variable} antialiased`}>
+      <body className={`${inter.variable} ${plexMono.variable} antialiased h-full`}>
         <Providers>{children}</Providers>
       </body>
     </html>

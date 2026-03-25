@@ -5,10 +5,11 @@ import {
   ConvexReactClient,
   AuthLoading, 
 } from "convex/react";
-import { ClerkProvider, SignUpButton, useAuth } from "@clerk/nextjs";
+import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 
 import { ThemeProvider } from "./theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip"; // ✅ add
 import { UnauthenticatedView } from "@/features/auth/components/unauthenticated-view";
 import { AuthLoadingView } from "@/features/auth/components/auth-loading-view";
 
@@ -18,21 +19,23 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ClerkProvider>
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-         <ThemeProvider
+        <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <Authenticated>
-            {children}
-          </Authenticated>
-          <Unauthenticated>
-            <UnauthenticatedView />
-          </Unauthenticated>
-          <AuthLoading>
-            <AuthLoadingView />
-          </AuthLoading>
+          <TooltipProvider> {/* ✅ add */}
+            <Authenticated>
+              {children}
+            </Authenticated>
+            <Unauthenticated>
+              <UnauthenticatedView />
+            </Unauthenticated>
+            <AuthLoading>
+              <AuthLoadingView />
+            </AuthLoading>
+          </TooltipProvider> {/* ✅ add */}
         </ThemeProvider>
       </ConvexProviderWithClerk>
     </ClerkProvider>
