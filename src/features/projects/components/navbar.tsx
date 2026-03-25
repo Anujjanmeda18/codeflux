@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { CloudCheckIcon, LoaderIcon } from "lucide-react";
+import { CloudCheckIcon, LoaderIcon, GitBranchIcon } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 import { Poppins } from "next/font/google";
 import { formatDistanceToNow } from "date-fns";
@@ -48,39 +48,46 @@ export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
   const handleSubmit = () => {
     if (!project) return;
     setIsRenaming(false);
-
     const trimmedName = name.trim();
     if (!trimmedName || trimmedName === project.name) return;
-
     renameProject({ id: projectId, name: trimmedName });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    } else if (e.key === "Escape") {
-      setIsRenaming(false);
-    }
+    if (e.key === "Enter") handleSubmit();
+    else if (e.key === "Escape") setIsRenaming(false);
   };
 
   return (
-    <nav className="flex justify-between items-center gap-x-2 p-2 bg-sidebar border-b">
-      <div className="flex items-center gap-x-2">
+    <nav className="flex justify-between items-center gap-x-2 px-3 py-1.5 bg-sidebar border-b border-border/50 backdrop-blur-sm">
+      {/* Left side */}
+      <div className="flex items-center gap-x-1.5">
         <Breadcrumb>
           <BreadcrumbList className="gap-0!">
             <BreadcrumbItem>
-              <BreadcrumbLink className="flex items-center gap-1.5" asChild>
-                <Button variant="ghost" className="w-fit! p-1.5! h-7!" asChild>
+              <BreadcrumbLink asChild>
+                <Button
+                  variant="ghost"
+                  className="w-fit! px-2! h-7! gap-1.5 hover:bg-white/5 transition-colors"
+                  asChild
+                >
                   <Link href="/">
-                    <Image src="/logo.svg" alt="Logo" width={20} height={20} />
-                    <span className={cn("text-sm font-medium", font.className)}>
+                    <Image src="/logo.svg" alt="Logo" width={18} height={18} />
+                    <span
+                      className={cn(
+                        "text-sm font-semibold tracking-tight bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent",
+                        font.className
+                      )}
+                    >
                       CodeFlux
                     </span>
                   </Link>
                 </Button>
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator className="ml-0! mr-1" />
+
+            <BreadcrumbSeparator className="mx-1 text-muted-foreground/40" />
+
             <BreadcrumbItem>
               {isRenaming ? (
                 <input
@@ -91,12 +98,12 @@ export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
                   onFocus={(e) => e.currentTarget.select()}
                   onBlur={handleSubmit}
                   onKeyDown={handleKeyDown}
-                  className="text-sm bg-transparent text-foreground outline-none focus:ring-1 focus:ring-inset focus:ring-ring font-medium max-w-40 truncate"
+                  className="text-sm bg-white/5 text-foreground outline-none focus:ring-1 focus:ring-inset focus:ring-primary/50 font-medium max-w-44 truncate rounded px-1.5 py-0.5"
                 />
               ) : (
                 <BreadcrumbPage
                   onClick={handleStartRename}
-                  className="text-sm cursor-pointer hover:text-primary font-medium max-w-40 truncate"
+                  className="text-sm cursor-pointer hover:text-foreground text-muted-foreground font-medium max-w-44 truncate transition-colors px-1 py-0.5 rounded hover:bg-white/5"
                 >
                   {project?.name ?? "Loading..."}
                 </BreadcrumbPage>
@@ -104,29 +111,48 @@ export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+
+        {/* Save status */}
         {project?.importStatus === "importing" ? (
           <Tooltip>
             <TooltipTrigger asChild>
-              <LoaderIcon className="size-4 text-muted-foreground animate-spin" />
+              <div className="flex items-center gap-1 text-xs text-muted-foreground/60 px-1.5">
+                <LoaderIcon className="size-3 animate-spin" />
+                <span>Importing...</span>
+              </div>
             </TooltipTrigger>
-            <TooltipContent>Importing...</TooltipContent>
+            <TooltipContent>Syncing with GitHub</TooltipContent>
           </Tooltip>
         ) : (
           <Tooltip>
             <TooltipTrigger asChild>
-              <CloudCheckIcon className="size-4 text-muted-foreground" />
+              <div className="flex items-center gap-1 text-xs text-muted-foreground/50 px-1.5 cursor-default">
+                <CloudCheckIcon className="size-3" />
+                <span className="hidden sm:inline">
+                  {project?.updatedAt
+                    ? `Saved ${formatDistanceToNow(project.updatedAt, { addSuffix: true })}`
+                    : "Saved"}
+                </span>
+              </div>
             </TooltipTrigger>
             <TooltipContent>
-              Saved{" "}
-              {project?.updatedAt
-                ? formatDistanceToNow(project.updatedAt, { addSuffix: true })
-                : "Loading..."}
+              All changes saved
+              {project?.updatedAt &&
+                ` · ${formatDistanceToNow(project.updatedAt, { addSuffix: true })}`}
             </TooltipContent>
           </Tooltip>
         )}
       </div>
+
+      {/* Right side */}
       <div className="flex items-center gap-2">
-        <UserButton />
+        <UserButton
+          appearance={{
+            elements: {
+              avatarBox: "size-7",
+            },
+          }}
+        />
       </div>
     </nav>
   );
