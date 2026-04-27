@@ -3,8 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { CloudCheckIcon, LoaderIcon, GitBranchIcon } from "lucide-react";
+import { CloudCheckIcon, LoaderIcon, GitBranchIcon, MoreVerticalIcon, TrashIcon } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import { Poppins } from "next/font/google";
 import { formatDistanceToNow } from "date-fns";
 
@@ -21,11 +22,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { Id } from "../../../../convex/_generated/dataModel";
-import { useProject, useRenameProject } from "../hooks/use-projects";
+import { useProject, useRenameProject, useDeleteProject } from "../hooks/use-projects";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -33,8 +40,10 @@ const font = Poppins({
 });
 
 export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
+  const router = useRouter();
   const project = useProject(projectId);
   const renameProject = useRenameProject();
+  const deleteProject = useDeleteProject();
 
   const [isRenaming, setIsRenaming] = useState(false);
   const [name, setName] = useState("");
@@ -56,6 +65,14 @@ export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") handleSubmit();
     else if (e.key === "Escape") setIsRenaming(false);
+  };
+
+  const handleDelete = () => {
+    const confirm = window.confirm("Are you sure you want to delete this project?");
+    if (confirm) {
+      deleteProject({ id: projectId });
+      router.push("/");
+    }
   };
 
   return (
@@ -146,6 +163,19 @@ export const Navbar = ({ projectId }: { projectId: Id<"projects"> }) => {
 
       {/* Right side */}
       <div className="flex items-center gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+              <MoreVerticalIcon className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive cursor-pointer">
+              <TrashIcon className="size-4 mr-2" />
+              Delete Project
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <UserButton
           appearance={{
             elements: {
