@@ -78,7 +78,7 @@
     "embla-carousel-react": "^8.6.0",
     "groq": "^5.18.0",
     "groq-sdk": "^1.1.1",
-    "inngest": "^3.52.7",
+    "inngest": "^3.54.0",
     "input-otp": "^1.4.2",
     "isbinaryfile": "^5.0.7",
     "ky": "^1.14.3",
